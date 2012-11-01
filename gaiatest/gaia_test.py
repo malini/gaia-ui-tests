@@ -71,6 +71,20 @@ class GaiaApps(object):
         self.marionette.execute_script("window.wrappedJSObject.WindowManager.kill('%s');"
                                         % app.origin)
 
+class GaiaData(object):
+
+    def __init__(self, marionette):
+        self.marionette = marionette
+        js = os.path.abspath(os.path.join(__file__, os.path.pardir, "gaia_data_layer.js"))
+        self.marionette.import_script(js)
+
+    def insert_contact(self, contact):
+        self.marionette.execute_script("GaiaDataLayer.insertContact(%s)" % contact.json())
+
+    def remove_contact(self, contact):
+        self.marionette.execute_script("GaiaDataLayer.findAndRemoveContact(%s)" % contact.json())
+
+
 class GaiaTestCase(MarionetteTestCase):
 
     def setUp(self):
