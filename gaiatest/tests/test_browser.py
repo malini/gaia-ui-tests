@@ -6,13 +6,13 @@ from gaiatest import GaiaTestCase
 import time
 import unittest
 
+
 class TestBrowser(GaiaTestCase):
 
     _awesome_bar_locator = ("id", "url-input")
     _url_button_locator = ("id", "url-button")
     _throbber_locator = ("id", "throbber")
     _browser_frame_locator = ('css selector', 'iframe[mozbrowser]')
-
 
     def setUp(self):
         GaiaTestCase.setUp(self)
@@ -42,17 +42,15 @@ class TestBrowser(GaiaTestCase):
         self.wait_for_condition(lambda m: self.is_throbber_visible() == False)
 
         # TODO This does not work
-        browser_frame = self.marionette.find_element(*self._browser_frame_locator)
+        browser_frame = self.marionette.find_element(
+            *self._browser_frame_locator)
         print browser_frame
 
         self.marionette.switch_to_frame(browser_frame)
 
-
         # TODO
         # Assert that the page has loaded correctly
         # Assert the error page is not shown
-
-
     def tearDown(self):
 
         # close the app
