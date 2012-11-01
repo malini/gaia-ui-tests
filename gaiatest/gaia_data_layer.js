@@ -4,37 +4,51 @@
 
 var GaiaDataLayer = {
 
-    insertContact: function(cdata){
-        contact = new mozContact();
-        contact.init(cdata);
-        var request = window.navigator.mozContacts.save(contact);
+    sendSms: function(number, message){
+        // SMS object
+        var sms = navigator.mozSms;
+
+        // Send a message
+        request = sms.send(number, message);
 
         request.onerror = function onerror() {
-            console.log('Error saving contact', request.error.name);
+            console.log('Error sending SMS', request.error.name);
         }
 
         request.onsuccess = function onsuccess() {
-            console.log('Success saving contact', request);
+            console.log('Success sending SMS', request);
         }
         return request;
     },
 
-    findAndRemoveContact: function(cdata){
-        var options = {filterBy: ["givenName"],
-            filterOp: "contains",
-            filterValue: cdata['givenName']};
+    deleteAllSms: function(event){
 
-        contact = window.navigator.mozContacts.find(options);
+        // SMS object
+        var sms = navigator.mozSms;
 
-        contact.onerror = function onerror() {
-            console.log('Could not find contact', contact.error.name);
+        var filter = new MozSmsFilter();
+        filter.numbers = ['+'];
+
+        // Send a message
+        request = sms.getMessages(filter, false);
+
+        request.onerror = function onerror() {
+            console.log('Error finding SMS', request.error.name);
         }
 
-        contact.onsuccess = function onsuccess() {
-            console.log('Success finding contact', contact);
-            if(contact.result.length > 0){
-                return window.navigator.mozContacts.remove(contact.result[0]);
+        request.onsuccess = function onsuccess() {
+            console.log('Success finding SMS', request);
+
+            cursor = request.result;
+
+            //console.log(cursor);
+            if (cursor.message) {
+                sms.delete(cursor.message.id);
+                // Now get next message in the list
+                cursor.continue();
             }
+
         }
+        //return request;
     }
 };

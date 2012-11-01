@@ -5,6 +5,7 @@
 from gaiatest import GaiaTestCase
 import time
 import unittest
+import time
 
 class TestSms(GaiaTestCase):
 
@@ -88,8 +89,29 @@ class TestSms(GaiaTestCase):
 
         self.assertIn("Reply\n" + _text_message_content, _received_message.text)
 
+    def test_sms_api(self):
+
+        self.data_layer.send_sms("", "Hello World!")
+
+        _new_message_locator = ('xpath', "//a[@class='unread']/div[text()='Hello World!']")
+        # now wait for the return message to arrive.
+        self.wait_for_element_present(*_new_message_locator, timeout=180)
+
+        # go into the new message
+        self.marionette.find_element(*_new_message_locator).click()
+        self.wait_for_element_displayed(*self._message_list_locator)
+
+        msg_id = self.marionette.find_elements('css selector', 'div.message-block')[0].get_attribute('id')
+
+        time.sleep(5)
+
+        self.data_layer.delete_all_sms()
+
+        self.marionette.refresh()
+        time.sleep(20)
 
     def tearDown(self):
+
 
         # close the app
         if self.app:

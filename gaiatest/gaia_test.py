@@ -78,12 +78,12 @@ class GaiaData(object):
         js = os.path.abspath(os.path.join(__file__, os.path.pardir, "gaia_data_layer.js"))
         self.marionette.import_script(js)
 
-    def insert_contact(self, contact):
-        self.marionette.execute_script("GaiaDataLayer.insertContact(%s)" % contact.json())
+    def send_sms(self, number, message):
+        self.marionette.execute_script("GaiaDataLayer.sendSms('%(number)s', '%(message)s');" %
+                {"number": number, "message": message})
 
-    def remove_contact(self, contact):
-        self.marionette.execute_script("GaiaDataLayer.findAndRemoveContact(%s)" % contact.json())
-
+    def delete_all_sms(self):
+        self.marionette.execute_script("GaiaDataLayer.deleteAllSms(event);")
 
 class GaiaTestCase(MarionetteTestCase):
 
@@ -94,6 +94,7 @@ class GaiaTestCase(MarionetteTestCase):
         self.marionette.set_script_timeout(60000)
         self.lockscreen = LockScreen(self.marionette)
         self.apps = GaiaApps(self.marionette)
+        self.data_layer = GaiaData(self.marionette)
 
     @property
     def is_emulator(self):
