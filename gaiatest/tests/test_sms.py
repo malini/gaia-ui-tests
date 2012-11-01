@@ -8,15 +8,19 @@ import unittest
 
 class TestSms(GaiaTestCase):
 
+    # Summary page
     _summary_header_locator = ('xpath', "//h1[text()='Messages']")
     _message_list_locator = ('id', 'header-text')
 
+    # Message composition
     _create_new_message_locator = ('id', 'icon-add')
     _receiver_input_locator = ('id','receiver-input')
     _message_field_locator = ('id', 'message-to-send')
     _send_message_button_locator = ('id', 'send-message')
     _back_header_link_locator = ('xpath', '//header/a[1]')
     _message_sending_spinner_locator = ('css selector', "img[src='style/images/spinningwheel_small_animation.gif']")
+
+    # Conversation view
     _received_message_content_locator = ('css selector', 'div.message-block span.received')
 
     def setUp(self):
