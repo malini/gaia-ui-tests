@@ -82,8 +82,8 @@ class GaiaData(object):
         self.marionette.execute_script("GaiaDataLayer.sendSms('%(number)s', '%(message)s');" %
                 {"number": number, "message": message})
 
-    def delete_all_sms(self):
-        self.marionette.execute_script("GaiaDataLayer.deleteAllSms(event);")
+    def delete_all_sms(self, id):
+        self.marionette.execute_script("GaiaDataLayer.deleteAllSms('%s');" % id)
 
 class GaiaTestCase(MarionetteTestCase):
 

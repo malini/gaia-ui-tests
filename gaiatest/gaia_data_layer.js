@@ -21,13 +21,15 @@ var GaiaDataLayer = {
         return request;
     },
 
-    deleteAllSms: function(event){
+    deleteAllSms: function(id){
 
         // SMS object
         var sms = navigator.mozSms;
 
+        var msgList = new Array();
+
         var filter = new MozSmsFilter();
-        filter.numbers = ['+'];
+        filter.numbers = [''];
 
         // Send a message
         request = sms.getMessages(filter, false);
@@ -41,14 +43,18 @@ var GaiaDataLayer = {
 
             cursor = request.result;
 
-            //console.log(cursor);
-            if (cursor.message) {
-                sms.delete(cursor.message.id);
+            console.log(cursor);
+
+            if(cursor.message){
+                console.log("Deleting message", cursor.message.id)
+                deleteReq = sms.delete(cursor.message.id);
                 // Now get next message in the list
                 cursor.continue();
             }
 
         }
+
         //return request;
     }
 };
+
