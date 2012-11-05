@@ -14,6 +14,8 @@ class TestDialer(GaiaTestCase):
     _hangup_bar_locator = ('id', 'callbar-hang-up-action')
     _call_screen_locator = ('css selector', "iframe[name='call_screen']")
 
+    _test_phone_number = "1234567890"
+
     def setUp(self):
 
         GaiaTestCase.setUp(self)
@@ -35,14 +37,15 @@ class TestDialer(GaiaTestCase):
 
         self.wait_for_element_displayed(*self._keyboard_container_locator)
 
-        self._dial_number(self.testvars['remote_phone_number'])
+        self._dial_number(self._test_phone_number)
 
         # Assert that the number was entered correctly.
         phone_view = self.marionette.find_element(*self._phone_number_view_locator)
 
-        self.assertEqual(phone_view.get_attribute('value'), self.testvars['remote_phone_number'])
+        self.assertEqual(phone_view.get_attribute('value'), self._test_phone_number)
 
         # Now press call!
+        # TODO before this step we need to use a real phone number passed in by testvars
         #self.marionette.find_element(*self._call_bar_locator).click()
 
         #self.marionette.switch_to_frame()

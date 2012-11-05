@@ -9,8 +9,9 @@ import unittest
 class TestMarketplace(GaiaTestCase):
 
     _login_button = ('css selector', 'a.button.browserid')
-
     _persona_frame = ('css selector',"iframe[name='__persona_dialog']")
+
+    _throbber_locator = ("id", "throbber")
 
     def setUp(self):
         GaiaTestCase.setUp(self)
@@ -31,10 +32,7 @@ class TestMarketplace(GaiaTestCase):
     @unittest.skip("Don't want to run this on CI")
     def test_load_marketplace(self):
 
-        # TODO replace this with an appropriate wait
-        time.sleep(10)
-        #print self.marionette.page_source
-
+        self.wait_for_element_displayed(*self._login_button)
         self.marionette.find_element(*self._login_button).click()
 
         # switch to top level frame
@@ -42,11 +40,11 @@ class TestMarketplace(GaiaTestCase):
 
         #switch to persona frame
 
-        self.marionette.wait_for_element_displayed(*self._persona_frame)
-        persona_frame = self.marionette.find_element(*self._persona_frame)
-        self.marionette.switch_to_frame(persona_frame)
+        self.wait_for_element_present(*self._persona_frame)
+        #persona_frame = self.marionette.find_element(*self._persona_frame)
+        #self.marionette.switch_to_frame(persona_frame)
 
-        #TODO switch to Persona frame
+        #TODO switch to Persona frame and wait for throbber to clear
 
 
         #TODO complete Persona login
@@ -63,3 +61,6 @@ class TestMarketplace(GaiaTestCase):
             self.apps.kill(self.app)
 
         GaiaTestCase.tearDown(self)
+
+    def is_throbber_visible(self):
+        return self.marionette.find_element(*self._throbber_locator).size['height'] == 4

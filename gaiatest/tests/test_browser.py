@@ -32,24 +32,21 @@ class TestBrowser(GaiaTestCase):
     @unittest.skip("Don't want to run this on CI")
     def test_browser_basic(self):
 
-        # This is returning True even though I cannot see it
-        self.wait_for_element_not_displayed(*self._throbber_locator)
-
         awesome_bar = self.marionette.find_element(*self._awesome_bar_locator)
         awesome_bar.click()
         awesome_bar.send_keys("www.mozilla.com")
 
         self.marionette.find_element(*self._url_button_locator).click()
 
-        time.sleep(5)
-        #print self.marionette.page_source
+        # This is returning True even though I cannot see it
+        self.wait_for_condition(lambda m: self.is_throbber_visible() == False)
 
         # TODO This does not work
         browser_frame = self.marionette.find_element(*self._browser_frame_locator)
         print browser_frame
-        #print browser_frame.size
 
         self.marionette.switch_to_frame(browser_frame)
+
 
         # TODO
         # Assert that the page has loaded correctly
@@ -63,3 +60,6 @@ class TestBrowser(GaiaTestCase):
             self.apps.kill(self.app)
 
         GaiaTestCase.tearDown(self)
+
+    def is_throbber_visible(self):
+        return self.marionette.find_element(*self._throbber_locator).size['height'] == 4

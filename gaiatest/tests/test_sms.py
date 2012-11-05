@@ -8,16 +8,20 @@ import unittest
 
 class TestSms(GaiaTestCase):
 
+    # Summary page
     _summary_header_locator = ('xpath', "//h1[text()='Messages']")
     _message_list_locator = ('id', 'header-text')
 
+    # Message composition
     _create_new_message_locator = ('id', 'icon-add')
     _receiver_input_locator = ('id','receiver-input')
     _message_field_locator = ('id', 'message-to-send')
     _send_message_button_locator = ('id', 'send-message')
     _back_header_link_locator = ('xpath', '//header/a[1]')
     _message_sending_spinner_locator = ('css selector', "img[src='style/images/spinningwheel_small_animation.gif']")
-    _received_message_content_locator = ('css selector', 'div.message-block span.received div.bubble')
+
+    # Conversation view
+    _received_message_content_locator = ('css selector', 'div.message-block span.received')
 
     def setUp(self):
         GaiaTestCase.setUp(self)
@@ -70,8 +74,7 @@ class TestSms(GaiaTestCase):
 
         self.wait_for_element_displayed(*self._summary_header_locator)
 
-        _new_message_locator = ('xpath',
-            "//a[@class='unread']/div[text()='%s']" % _text_message_content)
+        _new_message_locator = ('xpath', "//a[@class='unread']/div[text()='Reply ']")
 
         # now wait for the return message to arrive.
         self.wait_for_element_present(*_new_message_locator, timeout=180)
@@ -80,10 +83,10 @@ class TestSms(GaiaTestCase):
         self.marionette.find_element(*_new_message_locator).click()
         self.wait_for_element_displayed(*self._message_list_locator)
 
-        # verify the received text message
-        _received_message_text = self.marionette.find_element(*self._received_message_content_locator).text
+        # verify the last listed received text message
+        _received_message = self.marionette.find_elements(*self._received_message_content_locator)[-1]
 
-        self.assertIn("Reply\n" + _text_message_content, _received_message_text)
+        self.assertIn("Reply\n" + _text_message_content, _received_message.text)
 
 
     def tearDown(self):
