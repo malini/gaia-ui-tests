@@ -8,6 +8,10 @@ import json
 
 
 class MockContact(dict):
+    '''
+    The key values here match the data structure in the contacts db
+    so that the json output of this mock can be inserted directly into db
+    '''
 
     def __init__(self, **kwargs):
         # set your default values
