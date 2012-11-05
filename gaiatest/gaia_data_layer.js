@@ -20,9 +20,9 @@ var GaiaDataLayer = {
     },
 
     findAndRemoveContact: function(cdata){
-        var options = {filterBy: ["givenName"],
+        var options = {filterBy: ["familyName"],
             filterOp: "contains",
-            filterValue: cdata['givenName']};
+            filterValue: cdata['familyName']};
 
         contact = window.navigator.mozContacts.find(options);
 

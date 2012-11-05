@@ -94,6 +94,7 @@ class GaiaTestCase(MarionetteTestCase):
         self.marionette.set_script_timeout(60000)
         self.lockscreen = LockScreen(self.marionette)
         self.apps = GaiaApps(self.marionette)
+        self.data_layer = GaiaData(self.marionette)
 
     @property
     def is_emulator(self):
@@ -169,4 +170,5 @@ class GaiaTestCase(MarionetteTestCase):
     def tearDown(self):
         self.lockscreen = None
         self.apps = None
+        self.data_layer = None
         MarionetteTestCase.tearDown(self)

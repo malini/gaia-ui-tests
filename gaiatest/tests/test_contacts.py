@@ -22,6 +22,10 @@ class TestContacts(GaiaTestCase):
 
     _done_button_locator = ('id', 'save-button')
 
+    _edit_contact_button_locator = ('id', 'edit-contact-button')
+
+    _details_back_button_locator = ('id', 'details-back')
+
     def setUp(self):
         GaiaTestCase.setUp(self)
 
@@ -37,7 +41,6 @@ class TestContacts(GaiaTestCase):
         self.marionette.switch_to_frame(self.app.frame_id)
         url = self.marionette.get_url()
         self.assertTrue('communications' in url, 'wrong url: %s' % url)
-
 
     def test_add_new_contact(self):
         # https://moztrap.mozilla.org/manage/case/1309/
@@ -68,8 +71,46 @@ class TestContacts(GaiaTestCase):
         contact_locator = ('xpath',"//strong/b[text()='%s']" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
+    def test_edit_contact(self):
+        # First insert a new contact to edit
+        self.data_layer.insert_contact(self.contact)
+        self.marionette.refresh()
+
+        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
+
+        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
+        self.wait_for_element_displayed(*contact_locator)
+
+        self.marionette.find_element(*contact_locator).click()
+
+        self.wait_for_element_displayed(*self._edit_contact_button_locator)
+        self.marionette.find_element(*self._edit_contact_button_locator).click()
+
+        # Now we'll update the mock contact and then insert the new values into the UI
+        self.contact['givenName'] = 'gaia%s' % repr(time.time()).replace('.', '')[10:]
+        self.contact['familyName'] = "testedit"
+
+        given_name_field = self.marionette.find_element(*self._given_name_field_locator)
+        given_name_field.clear()
+        given_name_field.send_keys(self.contact['givenName'])
+
+        family_name_field = self.marionette.find_element(*self._family_name_field_locator)
+        family_name_field.clear()
+        family_name_field.send_keys(self.contact['familyName'])
+
+        self.marionette.find_element(*self._done_button_locator).click()
+
+        self.marionette.find_element(*self._details_back_button_locator).click()
+
+        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
+
+        edited_contact = self.wait_for_element_present(*contact_locator)
+        self.assertTrue(edited_contact.is_displayed())
 
     def tearDown(self):
+
+        if hasattr(self, 'contact'):
+            self.data_layer.remove_contact(self.contact)
 
         # close the app
         if hasattr(self, 'app'):
