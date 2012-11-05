@@ -16,7 +16,8 @@ class MockContact(dict):
         self['familyName'] = "test"
         self['name'] = self['givenName'] + " " + self['familyName']
         self['email'] = '%s@restmail.net' % self['givenName']
-        self['tel'] = "07011111111"
+        # TODO this will only support one phone number
+        self['tel'] = {'type':'Mobile','value':"07011111111"}
         self['street'] = "101 Testing street"
         self['zip'] = "90210"
         self['city'] = "London"

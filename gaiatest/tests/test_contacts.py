@@ -4,13 +4,23 @@
 
 from gaiatest import GaiaTestCase
 from gaiatest.mocks.mock_contact import MockContact
+import unittest
 import time
 
 
 class TestContacts(GaiaTestCase):
 
+    # Header buttons
     _add_new_contact_button_locator = ('id', 'add-contact-button')
+    _done_button_locator = ('id', 'save-button')
+    _edit_contact_button_locator = ('id', 'edit-contact-button')
+    _details_back_button_locator = ('id', 'details-back')
 
+    # Contact details panel
+    _send_sms_button_locator = ('id', 'send-sms-button-0')
+    _call_phone_number_button_locator = ('id', 'call-or-pick-0')
+
+    # New/Edit contact fields
     _given_name_field_locator = ('id', 'givenName')
     _family_name_field_locator = ('id', 'familyName')
     _email_field_locator = ('id', "email_0")
@@ -20,12 +30,6 @@ class TestContacts(GaiaTestCase):
     _city_field_locator = ('id', 'locality_0')
     _country_field_locator = ('id', 'countryName_0')
     _comment_field_locator = ('id', 'note_0')
-
-    _done_button_locator = ('id', 'save-button')
-
-    _edit_contact_button_locator = ('id', 'edit-contact-button')
-
-    _details_back_button_locator = ('id', 'details-back')
 
     def setUp(self):
         GaiaTestCase.setUp(self)
@@ -58,7 +62,7 @@ class TestContacts(GaiaTestCase):
         self.marionette.find_element(*self._family_name_field_locator).send_keys(self.contact['familyName'])
 
         self.marionette.find_element(
-            *self._phone_field_locator).send_keys(self.contact['tel'])
+            *self._phone_field_locator).send_keys(self.contact['tel']['value'])
         self.marionette.find_element(
             *self._email_field_locator).send_keys(self.contact['email'])
 
@@ -81,14 +85,15 @@ class TestContacts(GaiaTestCase):
             'xpath', "//strong/b[text()='%s']" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
-    def test_edit_contact(self):
+    def xtest_edit_contact(self):
         # First insert a new contact to edit
         self.data_layer.insert_contact(self.contact)
         self.marionette.refresh()
 
         self.wait_for_element_displayed(*self._add_new_contact_button_locator)
 
-        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
+        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]"
+            % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
         self.marionette.find_element(*contact_locator).click()
@@ -112,10 +117,54 @@ class TestContacts(GaiaTestCase):
 
         self.marionette.find_element(*self._details_back_button_locator).click()
 
-        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
+        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]"
+            % self.contact['givenName'])
 
         edited_contact = self.wait_for_element_present(*contact_locator)
         self.assertTrue(edited_contact.is_displayed())
+
+    @unittest.skip("Blocked by 801703")
+    def test_call_contact(self):
+        # Setup text message from a contact
+        # We can use the mock phone number because we don't need to actually make the call
+
+        self.data_layer.insert_contact(self.contact)
+        self.marionette.refresh()
+
+        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
+
+        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
+        self.wait_for_element_displayed(*contact_locator)
+
+        self.marionette.find_element(*contact_locator).click()
+        time.sleep(2)
+        self.marionette.find_element(*self._call_phone_number_button_locator).click()
+
+        self.marionette.switch_to_frame()
+
+        #self.marionette.switch_to_frame(dialer)
+        # TODO Verify the dialer has opened and displays the phone number in dialer
+
+    @unittest.skip("Blocked by 801703")
+    def test_sms_contact(self):
+        # Setup a text message from a contact
+
+        self.data_layer.insert_contact(self.contact)
+        self.marionette.refresh()
+
+        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
+
+        contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
+        self.wait_for_element_displayed(*contact_locator)
+
+        self.marionette.find_element(*contact_locator).click()
+        time.sleep(2)
+        self.marionette.find_element(*self._send_sms_button_locator).click()
+
+        self.marionette.switch_to_frame()
+
+        #self.marionette.switch_to_frame(message)
+        # TODO Verify the message app has opened and displays the message history
 
     def tearDown(self):
 
