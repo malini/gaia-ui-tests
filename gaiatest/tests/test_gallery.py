@@ -5,6 +5,7 @@
 from gaiatest import GaiaTestCase
 import time
 
+
 class TestGallery(GaiaTestCase):
 
     _throbber_locator = ('id', 'throbber')
@@ -27,7 +28,6 @@ class TestGallery(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('gallery' in url, 'wrong url: %s' % url)
 
-
     def test_gallery_view(self):
 
         # throbber is throbbing forever
@@ -36,13 +36,13 @@ class TestGallery(GaiaTestCase):
         self.marionette.find_elements(*self._gallery_items_locator)[0].click()
 
         self.wait_for_element_present(*self._current_photo)
-        self.assertTrue(self.marionette.find_element(*self._current_photo).is_displayed())
+        self.assertTrue(
+            self.marionette.find_element(*self._current_photo).is_displayed())
 
         # TODO
         # Add steps to view picture full screen
         # TODO
         # Repeat test with landscape orientation
-
 
     def tearDown(self):
 
