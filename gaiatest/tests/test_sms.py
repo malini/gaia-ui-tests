@@ -40,7 +40,7 @@ class TestSms(GaiaTestCase):
         self.assertTrue('gaiamobile' in url, 'wrong url: %s' % url)
 
 
-    @unittest.skip("Don't want to run this on CI")
+    #@unittest.skip("Don't want to run this on CI")
     @unittest.skipIf(GaiaTestCase.is_emulator is True, "Cannot run this test on emulator")
     def test_sms_send(self):
         '''
@@ -62,6 +62,7 @@ class TestSms(GaiaTestCase):
         contact_field.send_keys(self.testvars['remote_phone_number'])
 
         message_field = self.marionette.find_element(*self._message_field_locator)
+
         message_field.send_keys(_text_message_content)
 
         #click send
@@ -91,7 +92,7 @@ class TestSms(GaiaTestCase):
 
     def test_sms_api(self):
 
-        self.data_layer.send_sms("", "Hello World!")
+        self.data_layer.send_sms("+447449159596", "Hello World!")
 
         _new_message_locator = ('xpath', "//a[@class='unread']/div[text()='Hello World!']")
         # now wait for the return message to arrive.
@@ -99,13 +100,16 @@ class TestSms(GaiaTestCase):
 
         # go into the new message
         self.marionette.find_element(*_new_message_locator).click()
-        self.wait_for_element_displayed(*self._message_list_locator)
+       # self.wait_for_element_displayed(*self._message_list_locator)
 
-        msg_id = self.marionette.find_elements('css selector', 'div.message-block')[0].get_attribute('id')
+        time.sleep(5)
+        self.marionette.refresh()
 
         time.sleep(5)
 
-        self.data_layer.delete_all_sms()
+        #msg_id = self.marionette.find_elements('css selector', 'div.message-block')[0].get_attribute('id')
+
+        self.data_layer.delete_all_sms("0")
 
         self.marionette.refresh()
         time.sleep(20)

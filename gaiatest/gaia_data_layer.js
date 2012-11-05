@@ -24,21 +24,23 @@ var GaiaDataLayer = {
     deleteAllSms: function(id){
 
         // SMS object
-        var sms = navigator.mozSms;
+        var sms = window.navigator.mozSms;
 
         var filter = new MozSmsFilter();
 
         // Send a message
-        request = sms.getMessages(filter, false);
+        var request = sms.getMessages(filter, true);
 
-        request.onerror = function onerror(event) {
-            console.log('Error finding SMS', event.target.error.name);
+        console.log("Request is? ", request);
+
+        request.onerror = function onerror() {
+            console.log('Error finding SMS', request.error.name);
         }
 
-        request.onsuccess = function onsuccess(event) {
-            console.log('Success finding SMS', event.target);
+        request.onsuccess = function onsuccess() {
+            console.log('Success finding SMS');
 
-            cursor = event.target.result;
+            cursor = request.result;
 
             console.log(cursor);
 
