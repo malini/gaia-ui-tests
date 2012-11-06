@@ -7,9 +7,11 @@ import time
 
 class TestMusic(GaiaTestCase):
 
-  _throbber_locator = ('id', 'throbber')
-  _tab_albums_locator = ('id', 'tabs-albums')
   _album_tile_locator = ('xpath', ".//*[@id='views-list']/li/a")
+  _player_seek_elapsed_locator = ('id', 'player-seek-elapsed')
+  _player_controls_play_locator = ('id', 'player-controls-play')
+  _tab_albums_locator = ('id', 'tabs-albums')
+  _throbber_locator = ('id', 'throbber')
   _views_player_locator = ('id', 'views-player')
   _views_sublist_controls_play_locator = ('id', 'views-sublist-controls-play')
 
@@ -28,31 +30,34 @@ class TestMusic(GaiaTestCase):
       self.assertTrue('music' in url, 'wrong url: %s' % url)
 
   def test_select_album_play(self):
-      
+
       # wait for loaded music
       self.wait_for_element_not_displayed(*self._throbber_locator)
-      
+
       # switch to albums view
       self.marionette.find_element(*self._tab_albums_locator).click()
-      
+
       # check that an album is displayed
       self.wait_for_element_displayed(*self._album_tile_locator)
       self.assertTrue(
-          self.marionette.find_element(*self._album_tile_locator).is_displayed()
-      )
-      
+          self.marionette.find_element(*self._album_tile_locator).is_displayed())
+
       # select an album
       self.marionette.find_element(*self._album_tile_locator).click()
-      
-      # player view should be displayed
-      self.assertTrue(
-          self.marionette.find_element(*self._views_player_locator).is_displayed()
-      )
-        
+
       # select play
       self.marionette.find_element(*self._views_sublist_controls_play_locator).click()
-      time.sleep(5.5)    
-      
+
+      # play for a short duration
+      self.wait_for_condition(lambda m: m.find_element(
+          *self._player_seek_elapsed_locator).text == '00:05')
+
+      # select stop
+      self.marionette.find_element(*self._player_controls_play_locator).click()
+
+      # TODO
+      # Validate audio playback
+
   def tearDown(self):
       # close the app
       if hasattr(self, 'app'):
