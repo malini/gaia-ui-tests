@@ -5,6 +5,7 @@
 from gaiatest import GaiaTestCase
 import unittest
 
+
 class TestUpdater(GaiaTestCase):
 
     _device_info_link = ('css selector', "a[data-l10n-id='deviceInfo']")

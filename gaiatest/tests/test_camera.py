@@ -9,7 +9,8 @@ class TestCamera(GaiaTestCase):
 
     _capture_button_locator = ('id', 'capture-button')
     _switch_source_button_locator = ('id', 'switch-button')
-    _film_strip_image_locator = ('css selector', 'div#film-strip div.image > img')
+    _film_strip_image_locator = (
+        'css selector', 'div#film-strip div.image > img')
     _video_timer_locator = ('id', 'video-timer')
 
     def setUp(self):
@@ -26,7 +27,6 @@ class TestCamera(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('camera' in url, 'wrong url: %s' % url)
 
-
     def test_capture_a_photo(self):
         # https://moztrap.mozilla.org/manage/case/1309/
 
@@ -36,19 +36,22 @@ class TestCamera(GaiaTestCase):
         self.wait_for_element_present(*self._film_strip_image_locator)
 
         # Find the new picture in the film strip
-        self.assertTrue(self.marionette.find_element(*self._film_strip_image_locator).is_displayed())
-
+        self.assertTrue(self.marionette.find_element(
+            *self._film_strip_image_locator).is_displayed())
 
     def test_capture_a_video(self):
 
         self.wait_for_element_displayed(*self._capture_button_locator)
-        self.marionette.find_element(*self._switch_source_button_locator).click()
+        self.marionette.find_element(
+            *self._switch_source_button_locator).click()
 
         self.marionette.find_element(*self._capture_button_locator).click()
 
-        self.assertTrue(self.marionette.find_element(*self._video_timer_locator).is_displayed())
+        self.assertTrue(self.marionette.find_element(
+            *self._video_timer_locator).is_displayed())
         # Wait for 3 seconds of recording
-        self.wait_for_condition(lambda m: m.find_element(*self._video_timer_locator).text == '00:03')
+        self.wait_for_condition(lambda m: m.find_element(
+            *self._video_timer_locator).text == '00:03')
 
         # Stop recording
         self.marionette.find_element(*self._capture_button_locator).click()
@@ -57,7 +60,6 @@ class TestCamera(GaiaTestCase):
 
         # TODO
         # Validate the recorded video somehow
-
 
     def tearDown(self):
 

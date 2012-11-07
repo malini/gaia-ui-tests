@@ -6,10 +6,11 @@ from gaiatest import GaiaTestCase
 import time
 import unittest
 
+
 class TestMarketplace(GaiaTestCase):
 
     _login_button = ('css selector', 'a.button.browserid')
-    _persona_frame = ('css selector',"iframe[name='__persona_dialog']")
+    _persona_frame = ('css selector', "iframe[name='__persona_dialog']")
 
     _throbber_locator = ("id", "throbber")
 
@@ -28,7 +29,6 @@ class TestMarketplace(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('marketplace' in url, 'wrong url: %s' % url)
 
-
     @unittest.skip("Don't want to run this on CI")
     def test_load_marketplace(self):
 
@@ -46,14 +46,10 @@ class TestMarketplace(GaiaTestCase):
 
         #TODO switch to Persona frame and wait for throbber to clear
 
-
         #TODO complete Persona login
         #self.testvars['marketplace_username']
         #self.testvars['marketplace_password']
-
         #TODO Switch back to marketplace and verify that user is logged in
-
-
     def tearDown(self):
 
         # close the app

@@ -32,7 +32,6 @@ class TestDialer(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('dialer' in url, 'wrong url: %s' % url)
 
-
     def test_dialer_make_call(self):
 
         self.wait_for_element_displayed(*self._keyboard_container_locator)
@@ -40,9 +39,11 @@ class TestDialer(GaiaTestCase):
         self._dial_number(self._test_phone_number)
 
         # Assert that the number was entered correctly.
-        phone_view = self.marionette.find_element(*self._phone_number_view_locator)
+        phone_view = self.marionette.find_element(
+            *self._phone_number_view_locator)
 
-        self.assertEqual(phone_view.get_attribute('value'), self._test_phone_number)
+        self.assertEqual(
+            phone_view.get_attribute('value'), self._test_phone_number)
 
         # Now press call!
         # TODO before this step we need to use a real phone number passed in by testvars
@@ -71,7 +72,6 @@ class TestDialer(GaiaTestCase):
 
         GaiaTestCase.tearDown(self)
 
-
     def _dial_number(self, phone_number):
         '''
         Dial a number using the keypad
@@ -80,6 +80,6 @@ class TestDialer(GaiaTestCase):
         # TODO Doesn't work for + yet, requires click/hold gestures
         for i in phone_number:
             # ignore non-numeric part of phone number until we have gestures
-            if int(i) in range(0,10):
+            if int(i) in range(0, 10):
                 self.marionette.find_element('css selector', 'div.keypad-key div[data-value="%s"]' % i).click()
                 time.sleep(0.25)

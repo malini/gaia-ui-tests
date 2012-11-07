@@ -6,6 +6,7 @@
 
 import json
 
+
 class MockContact(dict):
 
     def __init__(self, **kwargs):
