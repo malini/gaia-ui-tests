@@ -17,6 +17,7 @@ class TestContacts(GaiaTestCase):
     _details_back_button_locator = ('id', 'details-back')
 
     # Contact details panel
+    _contact_name_title = ('id', 'contact-name-title')
     _send_sms_button_locator = ('id', 'send-sms-button-0')
     _call_phone_number_button_locator = ('id', 'call-or-pick-0')
 
@@ -85,7 +86,7 @@ class TestContacts(GaiaTestCase):
             'xpath', "//strong/b[text()='%s']" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
-    def xtest_edit_contact(self):
+    def test_edit_contact(self):
         # First insert a new contact to edit
         self.data_layer.insert_contact(self.contact)
         self.marionette.refresh()
@@ -104,6 +105,7 @@ class TestContacts(GaiaTestCase):
         # Now we'll update the mock contact and then insert the new values into the UI
         self.contact['givenName'] = 'gaia%s' % repr(time.time()).replace('.', '')[10:]
         self.contact['familyName'] = "testedit"
+        self.contact['tel']['value'] = "02011111111"
 
         given_name_field = self.marionette.find_element(*self._given_name_field_locator)
         given_name_field.clear()
@@ -113,6 +115,10 @@ class TestContacts(GaiaTestCase):
         family_name_field.clear()
         family_name_field.send_keys(self.contact['familyName'])
 
+        tel_field = self.marionette.find_element(*self._phone_field_locator)
+        tel_field.clear()
+        tel_field.send_keys(self.contact['tel']['value'])
+
         self.marionette.find_element(*self._done_button_locator).click()
 
         self.marionette.find_element(*self._details_back_button_locator).click()
@@ -120,8 +126,18 @@ class TestContacts(GaiaTestCase):
         contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]"
             % self.contact['givenName'])
 
+        # click back into the contact
         edited_contact = self.wait_for_element_present(*contact_locator)
-        self.assertTrue(edited_contact.is_displayed())
+        edited_contact.click()
+
+        # Now assert that the values have updated
+        full_name = self.contact['givenName'] + " " + self.contact['familyName']
+
+        self.assertEqual(self.marionette.find_element(*self._contact_name_title).text,
+            full_name)
+        self.assertEqual(self.marionette.find_element(*self._call_phone_number_button_locator).text,
+            self.contact['tel']['value'])
+
 
     @unittest.skip("Blocked by 801703")
     def test_call_contact(self):
