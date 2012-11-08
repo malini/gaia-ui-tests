@@ -35,6 +35,12 @@ class TestCalendar(GaiaTestCase):
 
     def test_check_today_date(self):
 
+        # wait for the selected day and month title to render
+        self.wait_for_element_displayed(
+            *self._current_month_year_locator)
+        self.wait_for_element_displayed(
+            *self._selected_day_title_locator)
+
         # find the default selected day and month title
         selected_day = self.marionette.find_element(
             *self._selected_day_title_locator)
@@ -57,7 +63,7 @@ class TestCalendar(GaiaTestCase):
 
         # close the app
         if hasattr(self, 'app'):
-	    self.apps.kill(self.app)
+            self.apps.kill(self.app)
 
         GaiaTestCase.tearDown(self)
 
