@@ -29,8 +29,8 @@ class TestCamera(GaiaTestCase):
 
     def test_capture_a_photo(self):
         # https://moztrap.mozilla.org/manage/case/1309/
+        self.wait_for_capture_ready()
 
-        self.wait_for_element_displayed(*self._capture_button_locator)
         self.marionette.find_element(*self._capture_button_locator).click()
 
         self.wait_for_element_present(*self._film_strip_image_locator)
@@ -40,15 +40,14 @@ class TestCamera(GaiaTestCase):
             *self._film_strip_image_locator).is_displayed())
 
     def test_capture_a_video(self):
+        self.wait_for_capture_ready()
 
-        self.wait_for_element_displayed(*self._capture_button_locator)
         self.marionette.find_element(
             *self._switch_source_button_locator).click()
 
         self.marionette.find_element(*self._capture_button_locator).click()
 
-        self.assertTrue(self.marionette.find_element(
-            *self._video_timer_locator).is_displayed())
+        self.wait_for_element_displayed(*self._video_timer_locator)
         # Wait for 3 seconds of recording
         self.wait_for_condition(lambda m: m.find_element(
             *self._video_timer_locator).text == '00:03')
@@ -60,6 +59,20 @@ class TestCamera(GaiaTestCase):
 
         # TODO
         # Validate the recorded video somehow
+
+    def wait_for_capture_ready(self):
+        self.marionette.set_script_timeout(10000)
+        self.marionette.execute_async_script("""
+        function check_ready_state() {
+            if (document.getElementById('viewfinder').readyState == 2) {
+                marionetteScriptFinished();
+            }
+            else {
+                setTimeout(check_ready_state, 500);
+            }
+        }
+        setTimeout(check_ready_state, 0);
+        """)
 
     def tearDown(self):
 
