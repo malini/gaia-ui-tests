@@ -1,9 +1,10 @@
-This repo is reviewed upon its ability to test the UI of the Gaia application.
+Contribution is more than welcome!
 
-Simplicity and readability is perfection here and most valued.
+If you already know what you're doing then your first port of call is the Git issues.
 
-Highly technical solutions produce diminishing levels of return and waste your time.
+However if you're more of a beginner you can start with the Marionette MDN resource to learn how to control B2G and Gaia:
+https://developer.mozilla.org/en-US/docs/Marionette
 
-There is a handy workflow chart to help your decision making process if you are reviewing code:
+To get your tests running refer to the README.md in this repository.
 
-Does it work?  >  Yes  > It's fine, don't touch it. Resist the urge to chase minute degrees of perfection.
+You can find me and other Mozillians that can help out in #qa and #mozwebqa on the irc.mozilla.org network.
