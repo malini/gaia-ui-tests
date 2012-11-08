@@ -64,7 +64,7 @@ class TestCamera(GaiaTestCase):
         self.marionette.set_script_timeout(10000)
         self.marionette.execute_async_script("""
         function check_ready_state() {
-            if (document.getElementById('viewfinder').readyState == 2) {
+            if (document.getElementById('viewfinder').readyState > 1) {
                 marionetteScriptFinished();
             }
             else {
