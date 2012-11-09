@@ -4,15 +4,18 @@
 
 from gaiatest import GaiaTestCase
 import time
-import unittest
 
 
 class TestBrowser(GaiaTestCase):
 
+    # Browser locators
     _awesome_bar_locator = ("id", "url-input")
     _url_button_locator = ("id", "url-button")
     _throbber_locator = ("id", "throbber")
     _browser_frame_locator = ('css selector', 'iframe[mozbrowser]')
+
+    # Mcom locators
+    _mcom_main_locator = ('id', 'main-content')
 
     def setUp(self):
         GaiaTestCase.setUp(self)
@@ -29,30 +32,27 @@ class TestBrowser(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('browser' in url, 'wrong url: %s' % url)
 
-    #@unittest.skip("Don't want to run this on CI")
+    @unittest.skip("Requires WiFi setup after flash Issue #2")
     def test_browser_basic(self):
 
         awesome_bar = self.marionette.find_element(*self._awesome_bar_locator)
         awesome_bar.click()
-        awesome_bar.send_keys("www.mozilla.com")
+        awesome_bar.send_keys("www.mozilla.org")
 
         self.marionette.find_element(*self._url_button_locator).click()
 
-        time.sleep(10)
-        # This is returning True even though I cannot see it
         self.wait_for_condition(lambda m: self.is_throbber_visible() == False)
 
-        # TODO This does not work
         browser_frame = self.marionette.find_element(
             *self._browser_frame_locator)
-        print browser_frame
 
+        time.sleep(5)
         self.marionette.switch_to_frame(browser_frame)
 
-        print self.marionette.page_source
-        # TODO
-        # Assert that the page has loaded correctly
-        # Assert the error page is not shown
+        mcom_body = self.marionette.find_element(*self._mcom_main_locator)
+
+        self.assertTrue(mcom_body.is_displayed(), "Element in browser is not displayed")
+
     def tearDown(self):
 
         # close the app
