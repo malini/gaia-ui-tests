@@ -29,7 +29,7 @@ class TestBrowser(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('browser' in url, 'wrong url: %s' % url)
 
-    @unittest.skip("Don't want to run this on CI")
+    #@unittest.skip("Don't want to run this on CI")
     def test_browser_basic(self):
 
         awesome_bar = self.marionette.find_element(*self._awesome_bar_locator)
@@ -38,6 +38,7 @@ class TestBrowser(GaiaTestCase):
 
         self.marionette.find_element(*self._url_button_locator).click()
 
+        time.sleep(10)
         # This is returning True even though I cannot see it
         self.wait_for_condition(lambda m: self.is_throbber_visible() == False)
 
@@ -48,6 +49,7 @@ class TestBrowser(GaiaTestCase):
 
         self.marionette.switch_to_frame(browser_frame)
 
+        print self.marionette.page_source
         # TODO
         # Assert that the page has loaded correctly
         # Assert the error page is not shown
