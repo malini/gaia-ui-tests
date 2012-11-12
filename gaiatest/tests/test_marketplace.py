@@ -5,6 +5,7 @@
 from gaiatest import GaiaTestCase
 import time
 import unittest
+from marionette.keys import Keys
 
 
 class TestMarketplace(GaiaTestCase):
@@ -12,7 +13,13 @@ class TestMarketplace(GaiaTestCase):
     _login_button = ('css selector', 'a.button.browserid')
     _persona_frame = ('css selector', "iframe[name='__persona_dialog']")
 
-    _throbber_locator = ("id", "throbber")
+    _throbber_locator = ('id', 'throbber')
+
+    _search_button = ('css selector', '.header-button.icon.search.right')
+    _search = ('id', 'search-q')
+
+    _search_results_area = ('id', 'search-results')
+    _search_result = ('css selector', '#search-results li.item')
 
     def setUp(self):
         GaiaTestCase.setUp(self)
@@ -26,6 +33,7 @@ class TestMarketplace(GaiaTestCase):
 
         # switch into the app's frame
         self.marionette.switch_to_frame(self.app.frame_id)
+
         url = self.marionette.get_url()
         self.assertTrue('marketplace' in url, 'wrong url: %s' % url)
 
@@ -50,6 +58,22 @@ class TestMarketplace(GaiaTestCase):
         #self.testvars['marketplace_username']
         #self.testvars['marketplace_password']
         #TODO Switch back to marketplace and verify that user is logged in
+
+    def test_that_searches_for_a_app(self):
+        self.wait_for_element_displayed(*self._search_button)
+        self.marionette.find_element(*self._search_button).click()
+
+        self.wait_for_element_displayed(*self._search)
+        search_box = self.marionette.find_element(*self._search)
+        search_box.send_keys('Hypno')
+        search_box.send_keys(Keys.RETURN)
+
+        self.wait_for_element_displayed(*self._search_results_area)
+
+        results = self.marionette.find_elements(*self._search_result)
+
+        self.assertGreater(len(results), 0, 'no results found')
+
     def tearDown(self):
 
         # close the app
