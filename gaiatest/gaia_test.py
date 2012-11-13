@@ -89,6 +89,8 @@ class GaiaData(object):
     def remove_contact(self, contact):
         self.marionette.execute_script("GaiaDataLayer.findAndRemoveContact(%s)" % contact.json())
 
+    def set_volume(self, volume):
+        self.marionette.execute_script("GaiaDataLayer.setVolume(%s)" % volume)
 
 class GaiaTestCase(MarionetteTestCase):
 
@@ -99,6 +101,7 @@ class GaiaTestCase(MarionetteTestCase):
         self.marionette.set_script_timeout(60000)
         self.lockscreen = LockScreen(self.marionette)
         self.apps = GaiaApps(self.marionette)
+        self.data_layer = GaiaData(self.marionette)
 
     @property
     def is_emulator(self):
