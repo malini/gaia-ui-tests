@@ -182,4 +182,5 @@ class GaiaTestCase(MarionetteTestCase):
     def tearDown(self):
         self.lockscreen = None
         self.apps = None
+        self.data_layer = None
         MarionetteTestCase.tearDown(self)
