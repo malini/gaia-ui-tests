@@ -16,12 +16,13 @@ class MockContact(dict):
     def __init__(self, **kwargs):
         # set your default values
         import time
-        self['givenName'] = 'gaia%s' % repr(time.time()).replace('.', '')[10:]
+        curr_time = repr(time.time()).replace('.', '')
+        self['givenName'] = 'gaia%s' % curr_time[10:]
         self['familyName'] = "test"
         self['name'] = self['givenName'] + " " + self['familyName']
         self['email'] = '%s@restmail.net' % self['givenName']
         # TODO this will only support one phone number
-        self['tel'] = {'type':'Mobile','value':"07011111111"}
+        self['tel'] = {'type':'Mobile','value':"555%s" % curr_time[:8]}
         self['street'] = "101 Testing street"
         self['zip'] = "90210"
         self['city'] = "London"

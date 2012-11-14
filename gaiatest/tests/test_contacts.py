@@ -10,6 +10,10 @@ import time
 
 class TestContacts(GaiaTestCase):
 
+    _loading_overlay = ('id', 'loading-overlay')
+
+    _sms_app_iframe_locator = ('css selector', 'iframe[src="app://sms.gaiamobile.org/index.html"]')
+
     # Header buttons
     _add_new_contact_button_locator = ('id', 'add-contact-button')
     _done_button_locator = ('id', 'save-button')
@@ -32,6 +36,9 @@ class TestContacts(GaiaTestCase):
     _country_field_locator = ('id', 'countryName_0')
     _comment_field_locator = ('id', 'note_0')
 
+    #SMS app locators
+    _sms_app_header_locator = ('id', 'header-text')
+
     def setUp(self):
         GaiaTestCase.setUp(self)
 
@@ -48,12 +55,12 @@ class TestContacts(GaiaTestCase):
         url = self.marionette.get_url()
         self.assertTrue('communications' in url, 'wrong url: %s' % url)
 
-    def test_add_new_contact(self):
+        self.wait_for_element_not_displayed(*self._loading_overlay)
+
+    def ztest_add_new_contact(self):
         # https://moztrap.mozilla.org/manage/case/1309/
-
-        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
-
         #click Create new contact
+
         self.marionette.find_element(
             *self._add_new_contact_button_locator).click()
         self.wait_for_element_displayed(*self._given_name_field_locator)
@@ -86,12 +93,12 @@ class TestContacts(GaiaTestCase):
             'xpath', "//strong/b[text()='%s']" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
-    def test_edit_contact(self):
+    def ztest_edit_contact(self):
+        # https://moztrap.mozilla.org/manage/case/1310/
         # First insert a new contact to edit
+
         self.data_layer.insert_contact(self.contact)
         self.marionette.refresh()
-
-        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
 
         contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]"
             % self.contact['givenName'])
@@ -139,15 +146,14 @@ class TestContacts(GaiaTestCase):
             self.contact['tel']['value'])
 
 
-    @unittest.skip("Blocked by 801703")
+    @unittest.skip("Scheduled for deletion as this makes a call")
     def test_call_contact(self):
         # Setup text message from a contact
-        # We can use the mock phone number because we don't need to actually make the call
+        # We can use the mock phone number because we don't
+        # want to actually make the call
 
         self.data_layer.insert_contact(self.contact)
         self.marionette.refresh()
-
-        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
 
         contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
@@ -158,33 +164,47 @@ class TestContacts(GaiaTestCase):
 
         self.marionette.switch_to_frame()
 
+        #print self.marionette.page_source
         #self.marionette.switch_to_frame(dialer)
         # TODO Verify the dialer has opened and displays the phone number in dialer
 
-    @unittest.skip("Blocked by 801703")
+    #@unittest.skip("Blocked by 801703")
     def test_sms_contact(self):
+        # https://moztrap.mozilla.org/manage/case/1314/
         # Setup a text message from a contact
 
         self.data_layer.insert_contact(self.contact)
         self.marionette.refresh()
 
-        self.wait_for_element_displayed(*self._add_new_contact_button_locator)
-
         contact_locator = ('xpath',"//li[@class='block-item'][descendant::b[text()='%s']]" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
         self.marionette.find_element(*contact_locator).click()
-        time.sleep(2)
+
+        self.wait_for_element_displayed(*self._send_sms_button_locator)
         self.marionette.find_element(*self._send_sms_button_locator).click()
 
         self.marionette.switch_to_frame()
 
-        #self.marionette.switch_to_frame(message)
-        # TODO Verify the message app has opened and displays the message history
+        sms_iframe = self.marionette.find_element(*self._sms_app_iframe_locator)
+        self.marionette.switch_to_frame(sms_iframe)
+
+        self.wait_for_element_displayed(*self._sms_app_header_locator)
+
+        header_element = self.marionette.find_element(*self._sms_app_header_locator)
+        expected_name = self.contact['givenName'] + " " + self.contact['familyName']
+        expected_tel = self.contact['tel']['value']
+
+        self.assertEqual(header_element.text, expected_name)
+        self.assertEqual(header_element.get_attribute('data-phone-number'),
+            expected_tel)
 
     def tearDown(self):
 
         if hasattr(self, 'contact'):
+            # Have to switch back to Contacts frame to remove the contact
+            self.marionette.switch_to_frame()
+            self.marionette.switch_to_frame(self.app.frame_id)
             self.data_layer.remove_contact(self.contact)
 
         # close the app
