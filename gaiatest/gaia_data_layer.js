@@ -36,5 +36,14 @@ var GaiaDataLayer = {
                 return window.navigator.mozContacts.remove(contact.result[0]);
             }
         }
+    },
+
+    setVolume: function(vdata){
+        lock = window.navigator.mozSettings.createLock()
+        volume = lock.set({"audio.volume.master":vdata});
+        lock.clear()
+        volume.onerror = function onerror(){
+            console.log('volume set failed', volume.error.name);
+        }
     }
 };
