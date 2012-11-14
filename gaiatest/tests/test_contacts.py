@@ -57,7 +57,8 @@ class TestContacts(GaiaTestCase):
 
         self.wait_for_element_not_displayed(*self._loading_overlay)
 
-    def ztest_add_new_contact(self):
+
+    def test_add_new_contact(self):
         # https://moztrap.mozilla.org/manage/case/1309/
         #click Create new contact
 
@@ -93,7 +94,8 @@ class TestContacts(GaiaTestCase):
             'xpath', "//strong/b[text()='%s']" % self.contact['givenName'])
         self.wait_for_element_displayed(*contact_locator)
 
-    def ztest_edit_contact(self):
+
+    def test_edit_contact(self):
         # https://moztrap.mozilla.org/manage/case/1310/
         # First insert a new contact to edit
 
@@ -168,7 +170,7 @@ class TestContacts(GaiaTestCase):
         #self.marionette.switch_to_frame(dialer)
         # TODO Verify the dialer has opened and displays the phone number in dialer
 
-    #@unittest.skip("Blocked by 801703")
+
     def test_sms_contact(self):
         # https://moztrap.mozilla.org/manage/case/1314/
         # Setup a text message from a contact
@@ -207,7 +209,5 @@ class TestContacts(GaiaTestCase):
             self.marionette.switch_to_frame(self.app.frame_id)
             self.data_layer.remove_contact(self.contact)
 
-        # close the app
-        if hasattr(self, 'app'):
-            self.apps.kill(self.app)
-            GaiaTestCase.tearDown(self)
+        # close all apps
+        self.apps.kill_all()

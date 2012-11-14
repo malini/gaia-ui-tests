@@ -69,11 +69,12 @@ class GaiaApps(object):
 
     def kill(self, app):
         self.marionette.switch_to_frame()
-        js = os.path.abspath(
-            os.path.join(__file__, os.path.pardir, "gaia_apps.js"))
-        self.marionette.import_script(js)
         self.marionette.execute_script("window.wrappedJSObject.WindowManager.kill('%s');"
                                        % app.origin)
+
+    def kill_all(self):
+        self.marionette.switch_to_frame()
+        self.marionette.execute_async_script("GaiaApps.killAll()")
 
 
 class GaiaData(object):
