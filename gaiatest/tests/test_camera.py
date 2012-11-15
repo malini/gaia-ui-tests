@@ -23,9 +23,7 @@ class TestCamera(GaiaTestCase):
         self.assertTrue(self.app.frame_id is not None)
 
         # switch into the Camera's frame
-        self.marionette.switch_to_frame(self.app.frame_id)
-        url = self.marionette.get_url()
-        self.assertTrue('camera' in url, 'wrong url: %s' % url)
+        self.apps.switch_to_frame(self.app.frame_id, 'camera')
 
     def test_capture_a_photo(self):
         # https://moztrap.mozilla.org/manage/case/1309/

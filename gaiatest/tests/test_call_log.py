@@ -31,9 +31,7 @@ class TestCallLog(GaiaTestCase):
         self.assertTrue(self.app.frame_id is not None)
 
         # switch into the app's frame
-        self.marionette.switch_to_frame(self.app.frame_id)
-        url = self.marionette.get_url()
-        self.assertTrue('dialer' in url, 'wrong url: %s' % url)
+        self.apps.switch_to_frame(self.app.frame_id, 'dialer') 
 
     def test_call_log_all_calls(self):
         self.wait_for_element_displayed(

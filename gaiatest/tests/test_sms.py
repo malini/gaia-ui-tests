@@ -36,9 +36,7 @@ class TestSms(GaiaTestCase):
         self.assertTrue(self.app.frame_id is not None)
 
         # switch into the frame
-        self.marionette.switch_to_frame(self.app.frame_id)
-        url = self.marionette.get_url()
-        self.assertTrue('gaiamobile' in url, 'wrong url: %s' % url)
+        self.apps.switch_to_frame(self.app.frame_id, 'gaiamobile')
 
     @unittest.skip("Don't want to run this on CI")
     @unittest.skipIf(GaiaTestCase.is_emulator is True, "Cannot run this test on emulator")

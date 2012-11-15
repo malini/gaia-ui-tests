@@ -51,9 +51,7 @@ class TestContacts(GaiaTestCase):
         self.assertTrue(self.app.frame_id is not None)
 
         # switch into the Contact's frame
-        self.marionette.switch_to_frame(self.app.frame_id)
-        url = self.marionette.get_url()
-        self.assertTrue('communications' in url, 'wrong url: %s' % url)
+        self.apps.switch_to_frame(self.app.frame_id, 'communications')
 
         self.wait_for_element_not_displayed(*self._loading_overlay)
 

@@ -76,6 +76,15 @@ class GaiaApps(object):
         self.marionette.switch_to_frame()
         self.marionette.execute_async_script("GaiaApps.killAll()")
 
+    def switch_to_frame(self, app_frame, url, timeout=30):
+        self.marionette.switch_to_frame(app_frame)
+        start = time.time()
+        while (time.time() - start < timeout):
+            if url in self.marionette.get_url():
+                return
+            time.sleep(2)
+        raise TimeoutException('Could not launch app %s in time' % name)
+
 
 class GaiaData(object):
 

@@ -32,10 +32,7 @@ class TestMarketplace(GaiaTestCase):
         self.assertTrue(self.app.frame_id is not None)
 
         # switch into the app's frame
-        self.marionette.switch_to_frame(self.app.frame_id)
-
-        url = self.marionette.get_url()
-        self.assertTrue('marketplace' in url, 'wrong url: %s' % url)
+        self.apps.switch_to_frame(self.app.frame_id, 'marketplace')
 
     @unittest.skip("Don't want to run this on CI")
     def test_load_marketplace(self):

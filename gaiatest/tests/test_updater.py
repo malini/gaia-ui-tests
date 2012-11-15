@@ -20,9 +20,7 @@ class TestUpdater(GaiaTestCase):
         self.app = self.apps.launch('Settings')
         self.assertTrue(self.app.frame_id is not None)
 
-        self.marionette.switch_to_frame(self.app.frame_id)
-        url = self.marionette.get_url()
-        self.assertTrue('settings' in url, 'wrong url: %s' % url)
+        self.apps.switch_to_frame(self.app.frame_id, 'settings')
 
     # TODO finish this test as per https://github.com/zacc/gaia-ui-tests/issues/5
     @unittest.skip("Don't want to run this on CI")
