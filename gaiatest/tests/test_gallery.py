@@ -32,6 +32,7 @@ class TestGallery(GaiaTestCase):
 
         # throbber is throbbing forever
         self.wait_for_element_not_displayed(*self._throbber_locator)
+        self.wait_for_element_displayed(*self._galler_items_locator)
 
         self.marionette.find_elements(*self._gallery_items_locator)[0].click()
 
