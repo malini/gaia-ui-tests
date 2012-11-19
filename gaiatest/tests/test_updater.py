@@ -18,9 +18,6 @@ class TestUpdater(GaiaTestCase):
 
         # launch the Settings app
         self.app = self.apps.launch('Settings')
-        self.assertTrue(self.app.frame_id is not None)
-
-        self.apps.switch_to_frame(self.app.frame_id, 'settings')
 
     # TODO finish this test as per https://github.com/zacc/gaia-ui-tests/issues/5
     @unittest.skip("Don't want to run this on CI")

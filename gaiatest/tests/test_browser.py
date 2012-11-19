@@ -22,10 +22,6 @@ class TestBrowser(GaiaTestCase):
 
         # launch the app
         self.app = self.apps.launch('Browser')
-        self.assertTrue(self.app.frame_id is not None)
-
-        # switch into the app's frame
-        self.apps.switch_to_frame(self.app.frame_id, 'browser')
 
     def test_browser_basic(self):
 

@@ -58,13 +58,17 @@ class GaiaApps(object):
             os.path.join(__file__, os.path.pardir, "gaia_apps.js"))
         self.marionette.import_script(js)
 
-    def launch(self, name):
+    def launch(self, name, switch_to_frame=True, url=None):
         result = self.marionette.execute_async_script(
             "GaiaApps.launchWithName('%s')" % name)
         app = GaiaApp(frame_id=result.get('frame'),
                       src=result.get('src'),
                       name=result.get('name'),
                       origin=result.get('origin'))
+        if app.frame_id is None:
+            raise Exception("App failed to launch; there is no app frame")
+        if switch_to_frame:
+           self.switch_to_frame(app.frame_id, url) 
         return app
 
     def kill(self, app):
@@ -76,14 +80,20 @@ class GaiaApps(object):
         self.marionette.switch_to_frame()
         self.marionette.execute_async_script("GaiaApps.killAll()")
 
-    def switch_to_frame(self, app_frame, url, timeout=30):
+    def switch_to_frame(self, app_frame, url=None, timeout=30):
         self.marionette.switch_to_frame(app_frame)
         start = time.time()
+        if not url:
+            def check(now):
+                return "about:blank" not in now
+        else:
+            def check(now):
+                return url in now
         while (time.time() - start < timeout):
-            if url in self.marionette.get_url():
+            if check(self.marionette.get_url()):
                 return
             time.sleep(2)
-        raise TimeoutException('Could not launch app %s in time' % name)
+        raise TimeoutException('Could not switch to app frame %s in time' % app_frame)
 
 
 class GaiaData(object):

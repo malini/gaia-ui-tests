@@ -20,10 +20,6 @@ class TestCamera(GaiaTestCase):
 
         # launch the Camera app
         self.app = self.apps.launch('camera')
-        self.assertTrue(self.app.frame_id is not None)
-
-        # switch into the Camera's frame
-        self.apps.switch_to_frame(self.app.frame_id, 'camera')
 
     def test_capture_a_photo(self):
         # https://moztrap.mozilla.org/manage/case/1309/

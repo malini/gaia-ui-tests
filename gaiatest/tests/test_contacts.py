@@ -48,13 +48,8 @@ class TestContacts(GaiaTestCase):
 
         # launch the Contacts app
         self.app = self.apps.launch('Contacts')
-        self.assertTrue(self.app.frame_id is not None)
-
-        # switch into the Contact's frame
-        self.apps.switch_to_frame(self.app.frame_id, 'communications')
 
         self.wait_for_element_not_displayed(*self._loading_overlay)
-
 
     def test_add_new_contact(self):
         # https://moztrap.mozilla.org/manage/case/1309/

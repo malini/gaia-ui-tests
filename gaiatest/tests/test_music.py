@@ -22,10 +22,6 @@ class TestMusic(GaiaTestCase):
 
       # launch the Music application
       self.app = self.apps.launch("music")
-      self.assertTrue(self.app.frame_id is not None)
-
-      # switch into the Music frame
-      self.apps.switch_to_frame(self.app.frame_id, 'music')
 
   def test_select_album_play(self):
 

@@ -33,10 +33,6 @@ class TestSms(GaiaTestCase):
 
         # launch the app
         self.app = self.apps.launch('Messages')
-        self.assertTrue(self.app.frame_id is not None)
-
-        # switch into the frame
-        self.apps.switch_to_frame(self.app.frame_id, 'gaiamobile')
 
     @unittest.skip("Don't want to run this on CI")
     @unittest.skipIf(GaiaTestCase.is_emulator is True, "Cannot run this test on emulator")

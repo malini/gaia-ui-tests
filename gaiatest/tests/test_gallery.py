@@ -21,17 +21,10 @@ class TestGallery(GaiaTestCase):
 
         # launch the Gallery app
         self.app = self.apps.launch('Gallery')
-        self.assertTrue(self.app.frame_id is not None)
-
-        # switch into the Gallery's frame
-        self.apps.switch_to_frame(self.app.frame_id, 'gallery')
 
     def test_gallery_view(self):
 
-        # throbber is throbbing forever
-        self.wait_for_element_not_displayed(*self._throbber_locator)
         self.wait_for_element_displayed(*self._gallery_items_locator)
-
         self.marionette.find_elements(*self._gallery_items_locator)[0].click()
 
         self.wait_for_element_present(*self._current_photo)

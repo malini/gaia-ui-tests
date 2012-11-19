@@ -29,10 +29,6 @@ class TestMarketplace(GaiaTestCase):
 
         # launch the app
         self.app = self.apps.launch('Marketplace')
-        self.assertTrue(self.app.frame_id is not None)
-
-        # switch into the app's frame
-        self.apps.switch_to_frame(self.app.frame_id, 'marketplace')
 
     @unittest.skip("Don't want to run this on CI")
     def test_load_marketplace(self):
